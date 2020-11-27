@@ -10,7 +10,6 @@ import {IPayload} from "./auth.interface";
 export class AuthService {
   constructor(private readonly userService: UserService, private readonly jwtService: JwtService) {}
   async validateUser(user: User): Promise<any> {
-    console.log(user);
     const findUser = await this.userService.findByUsername(user.username);
     if (findUser && (await bcrypt.compare(user.password, findUser.password))) {
       const { password, ...result } = findUser;
