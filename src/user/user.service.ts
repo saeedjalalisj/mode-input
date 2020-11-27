@@ -25,6 +25,14 @@ export class UserService {
     }
   }
 
+  async findById(id: string) {
+    try {
+      return await this.userModel.findById(id).exec();
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   findAll() {
     return `This action returns all user`;
   }
