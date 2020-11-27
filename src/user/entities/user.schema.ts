@@ -7,7 +7,7 @@ export type UserDocument = User & Document;
 @Schema()
 export class User {
   @Prop({ required: true, unique: true })
-  email: string;
+  username: string;
 
   @Prop()
   password: string;
@@ -21,7 +21,9 @@ export class User {
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
-UserSchema.pre('save', async (next) => {
+UserSchema.pre('save', async function (next) {
+  // https://stackoverflow.com/questions/37365038/this-is-undefined-in-a-mongoose-pre-save-hook
+  // @ts-ignore
   this.password = await bcrypt.hash(this.password , 10) // todo : get salt from config
   next();
 });
