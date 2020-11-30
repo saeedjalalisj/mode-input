@@ -1,60 +1,56 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Schema as S } from 'mongoose';
 import * as mongoose from 'mongoose';
 
 @Schema()
 export class Campaigns {
-  @Prop()
+  @Prop(String)
   name: string;
 
-  @Prop()
+  @Prop(String)
   title: string;
 
-  @Prop()
+  @Prop(String)
   subtitle: string;
 
-  @Prop()
+  @Prop(String)
   thanks_message: string;
 
-  @Prop()
-  email_status: {
-    type: string,
+  @Prop({
+    type: String,
     enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  })
+  email_status: string;
 
-  @Prop()
-  full_name_status: {
-    type: string,
+  @Prop({
+    type: String,
     enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  })
+  full_name_status: string
 
-  @Prop()
-  description_status: {
-    type: string,
+  @Prop({
+    type: String,
     enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  })
+  description_status:string
 
-  @Prop()
-  star_status: {
-    type: string,
+  @Prop({
+    type: String,
     enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  })
+  star_status: string;
 
-  @Prop()
-  type: {
-    type: string,
-    enum: ['contact', 'feedback', 'subscribe']
-  };
+  @Prop({
+    type: String,
+    enum: ['required', 'optional', 'hidden'],
+  })
+  type: string
 
-  @Prop()
-  user_id: {
+  @Prop({
     type:  mongoose.Schema.Types.ObjectId,
     ref: 'User'
-  }
+  })
+  user_id: string
 }
 
 export type CampaignsDocument = Campaigns & Document;

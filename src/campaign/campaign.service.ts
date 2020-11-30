@@ -7,7 +7,9 @@ import { InjectModel } from '@nestjs/mongoose';
 
 @Injectable()
 export class CampaignService {
-  constructor(@InjectModel(Campaigns.name) private campaignModel: Model<CampaignsDocument>) {}
+  constructor(@InjectModel(Campaigns.name) private campaignModel: Model<CampaignsDocument>) {
+  }
+
   async create(createCampaignDto: CreateCampaignDto) {
     try {
       return await new this.campaignModel(createCampaignDto).save();
@@ -16,7 +18,7 @@ export class CampaignService {
     }
   }
 
-  async findAll(page: number, perPage= 5) {
+  async findAll(page: number, perPage = 5) {
     try {
       page = (page - 1) > 0 ? (page - 1) : 0;
       return await this.campaignModel.find().limit(perPage).skip(perPage * page).exec();
@@ -33,8 +35,24 @@ export class CampaignService {
     }
   }
 
-  update(id: number, updateCampaignDto: UpdateCampaignDto) {
-    return `This action updates a #${id} campaign`;
+  async update(id: string, updateCampaignDto: UpdateCampaignDto) {
+    try { // todo: remove ts-list problem
+      return await this.campaignModel.updateOne({ _id: id }, {
+        $set: {
+          name: `new_camp1`,
+          title: 'say more?',
+          subtitle: 'is that is good?',
+          thanks_message: 'thanks',
+          email_status: 'optional',
+          full_name_status: 'optional',
+          star_status: 'optional',
+          description_status: 'optional',
+          type: 'feedback',
+        },
+      });
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   remove(id: number) {

@@ -13,18 +13,18 @@ export class CampaignController {
   }
 
   @Get()
-  findAll() {
-    return this.campaignService.findAll();
+  findAll(page: number, perPage = 5) {
+    return this.campaignService.findAll(page, perPage);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.campaignService.findOne(+id);
+    return this.campaignService.findOne(id);
   }
 
   @Put(':id')
   update(@Param('id') id: string, @Body() updateCampaignDto: UpdateCampaignDto) {
-    return this.campaignService.update(+id, updateCampaignDto);
+    return this.campaignService.update(id, updateCampaignDto);
   }
 
   @Delete(':id')

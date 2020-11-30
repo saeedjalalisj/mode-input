@@ -1,22 +1,23 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CampaignService } from './campaign.service';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import * as  mongoose from "mongoose";
+import * as mongoose from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Campaigns, CampaignsSchema } from './entities/campaign.schema';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
+import { UpdateCampaignDto } from './dto/update-campaign.dto';
 
 describe('CampaignService', () => {
   let service: CampaignService;
 
   let mongod: MongoMemoryServer = new MongoMemoryServer({
     autoStart: true,
-  })
+  });
 
   afterEach(async () => {
     await mongoose.disconnect();
     await mongod.stop();
-  })
+  });
 
   beforeEach(async () => {
     mongod = new MongoMemoryServer();
@@ -31,7 +32,9 @@ describe('CampaignService', () => {
             useCreateIndex: true,
           }),
         }),
-        MongooseModule.forFeature([{ name: Campaigns.name, schema: CampaignsSchema }])
+        MongooseModule.forFeature([
+          { name: Campaigns.name, schema: CampaignsSchema },
+        ]),
       ],
     }).compile();
 
@@ -52,7 +55,7 @@ describe('CampaignService', () => {
       full_name_status: 'optional',
       star_status: 'optional',
       description_status: 'optional',
-      type: 'feedback'
+      type: 'feedback',
     };
     const created = await service.create(createCampaignDto);
     expect(created.name).toBe(createCampaignDto.name);
@@ -72,7 +75,7 @@ describe('CampaignService', () => {
         full_name_status: 'optional',
         star_status: 'optional',
         description_status: 'optional',
-        type: 'feedback'
+        type: 'feedback',
       };
       await service.create(createCampaignDto);
     }
@@ -81,7 +84,6 @@ describe('CampaignService', () => {
   });
 
   it('should find campaign with id', async () => {
-
     const createCampaignDto: CreateCampaignDto = {
       name: `new_camp`,
       title: 'say more?',
@@ -91,12 +93,42 @@ describe('CampaignService', () => {
       full_name_status: 'optional',
       star_status: 'optional',
       description_status: 'optional',
-      type: 'feedback'
+      type: 'feedback',
     };
 
     const created = await service.create(createCampaignDto);
-    const result = await service.findOne(created.id)
+    const result = await service.findOne(created.id);
     expect(result.name).toBe(createCampaignDto.name);
   });
 
+  it('should be update campaign ', async () => {
+    const createCampaignDto: CreateCampaignDto = {
+      name: `new_camp`,
+      title: 'say more?',
+      subtitle: 'is that is good?',
+      thanks_message: 'thanks',
+      email_status: 'optional',
+      full_name_status: 'optional',
+      star_status: 'optional',
+      description_status: 'optional',
+      type: 'feedback',
+    };
+
+    const created = await service.create(createCampaignDto);
+
+    const updateCampaignDto: UpdateCampaignDto = {
+      name: `new_camp1`,
+      title: 'say more?',
+      subtitle: 'is that is good?',
+      thanks_message: 'thanks',
+      full_name_status: 'optional',
+      email_status: 'optional',
+      star_status: 'optional',
+      description_status: 'optional',
+      type: 'feedback',
+    };
+    await service.update(created.id, updateCampaignDto);
+    const result = await service.findOne(created.id);
+    expect(result.name).toBe(updateCampaignDto.name);
+  });
 });
