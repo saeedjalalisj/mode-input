@@ -38,17 +38,7 @@ export class CampaignService {
   async update(id: string, updateCampaignDto: UpdateCampaignDto) {
     try { // todo: remove ts-list problem
       return await this.campaignModel.updateOne({ _id: id }, {
-        $set: {
-          name: `new_camp1`,
-          title: 'say more?',
-          subtitle: 'is that is good?',
-          thanks_message: 'thanks',
-          email_status: 'optional',
-          full_name_status: 'optional',
-          star_status: 'optional',
-          description_status: 'optional',
-          type: 'feedback',
-        },
+        $set: updateCampaignDto,
       });
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
