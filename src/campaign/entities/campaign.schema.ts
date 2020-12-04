@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document, Schema as S } from 'mongoose';
+import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { User } from '../../user/entities/user.schema';
 
 @Schema()
 export class Campaigns {
@@ -48,9 +49,9 @@ export class Campaigns {
 
   @Prop({
     type:  mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+    ref: User.name
   })
-  user_id: string
+  userId: string
 }
 
 export type CampaignsDocument = Campaigns & Document;

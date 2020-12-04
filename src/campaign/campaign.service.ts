@@ -1,43 +1,44 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { Campaigns, CampaignsDocument } from './entities/campaign.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
+import { CreateCampaignInterface } from './interface/createCampaign.interface';
 
 @Injectable()
 export class CampaignService {
   constructor(@InjectModel(Campaigns.name) private campaignModel: Model<CampaignsDocument>) {
   }
 
-  async create(createCampaignDto: CreateCampaignDto) {
+  async create(createCampaign: CreateCampaignInterface, userId: string) {
     try {
-      return await new this.campaignModel(createCampaignDto).save();
+      createCampaign.userId = userId;
+      return await new this.campaignModel(createCampaign).save();
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async findAll(page: number, perPage = 5) {
+  async findAll(page: number, perPage = 5, userId: string) {
     try {
       page = (page - 1) > 0 ? (page - 1) : 0;
-      return await this.campaignModel.find().limit(perPage).skip(perPage * page).exec();
+      return await this.campaignModel.find({userId}).limit(perPage).skip(perPage * page).exec();
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
     try {
-      return await this.campaignModel.findOne({ _id: id });
+      return await this.campaignModel.findOne({ _id: id, userId });
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async update(id: string, updateCampaignDto: UpdateCampaignDto) {
+  async update(id: string, updateCampaignDto: UpdateCampaignDto, userId: string) {
     try { // todo: remove ts-list problem
-      return await this.campaignModel.updateOne({ _id: id }, {
+      return await this.campaignModel.updateOne({ _id: id, userId }, {
         $set: updateCampaignDto,
       });
     } catch (err) {
@@ -45,7 +46,7 @@ export class CampaignService {
     }
   }
 
-  remove(id: number) {
+  remove(id: string, userId: string) {
     return `This action removes a #${id} campaign`;
   }
 }
