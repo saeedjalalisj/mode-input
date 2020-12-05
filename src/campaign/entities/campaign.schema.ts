@@ -3,6 +3,9 @@ import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/entities/user.schema';
 
+
+//todo: add schema string validation
+// validation: not working
 @Schema()
 export class Campaigns {
   @Prop(String)
@@ -17,34 +20,19 @@ export class Campaigns {
   @Prop(String)
   thanks_message: string;
 
-  @Prop({
-    type: String,
-    enum: ['required', 'optional', 'hidden'],
-  })
+  @Prop(String)
   email_status: string;
 
-  @Prop({
-    type: String,
-    enum: ['required', 'optional', 'hidden'],
-  })
+  @Prop(String)
   full_name_status: string
 
-  @Prop({
-    type: String,
-    enum: ['required', 'optional', 'hidden'],
-  })
+  @Prop(String)
   description_status:string
 
-  @Prop({
-    type: String,
-    enum: ['required', 'optional', 'hidden'],
-  })
+  @Prop(String)
   star_status: string;
-
-  @Prop({
-    type: String,
-    enum: ['required', 'optional', 'hidden'],
-  })
+  
+  @Prop(String)
   type: string
 
   @Prop({
