@@ -19,7 +19,7 @@ export class CampaignResponseService {
     }
   }
 
-  async findAll(campId: string, userId: string, page?: number, perPage?) {
+  async findAll(campId: string, userId: string, page?: number, perPage?: number) {
     try {
       perPage = (perPage) ? perPage : 5;
       page = (page - 1) > 0 ? (page - 1) : 0;

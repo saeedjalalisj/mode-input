@@ -1,34 +1,32 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { CampaignResponseService } from './campaign-response.service';
 import { CreateCampaignResponseDto } from './dto/create-campaign-response.dto';
-import { UpdateCampaignResponseDto } from './dto/update-campaign-response.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { CreateCampaignResponseInterface } from './interface/create-campaign-response.interface';
+import { CurrentUser } from '../decorators/user.decorator';
 
 @Controller('campaign-response')
 export class CampaignResponseController {
   constructor(private readonly campaignResponseService: CampaignResponseService) {}
 
-  @Post()
-  create(@Body() createCampaignResponseDto: CreateCampaignResponseDto) {
-    return this.campaignResponseService.create(createCampaignResponseDto);
+  @Post(':campId')
+  create(@Body() createCampaignResponseDto: CreateCampaignResponseDto, @Param(':campId') campId: string) {
+    const campRespDto: CreateCampaignResponseInterface = {
+      ...createCampaignResponseDto,
+      campId
+    };
+    return this.campaignResponseService.create(campRespDto);
   }
 
-  @Get()
-  findAll() {
-    return this.campaignResponseService.findAll();
+  @UseGuards(AuthGuard('jwt'))
+  @Get('/:campId/:page/:perpage')
+  findAll(@Param(':campId') campId: string, @CurrentUser() currentUser, @Param(':page') page, @Param(':perpage') perPage ) {
+    return this.campaignResponseService.findAll(campId, currentUser.userId, page, perPage);
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.campaignResponseService.findOne(+id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateCampaignResponseDto: UpdateCampaignResponseDto) {
-    return this.campaignResponseService.update(+id, updateCampaignResponseDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.campaignResponseService.remove(+id);
+    return this.campaignResponseService.findOne(id);
   }
 }
