@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CampaignModule } from './campaign/campaign.module';
+import { CampaignResponseModule } from './campaign-response/campaign-response.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -18,7 +19,8 @@ import configuration from './config/configuration';
     }),
     UserModule,
     AuthModule,
-    CampaignModule
+    CampaignModule,
+    CampaignResponseModule,
   ],
   controllers: [AppController],
   providers: [
