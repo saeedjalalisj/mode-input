@@ -22,6 +22,7 @@ export class CampaignService {
   async findAll(page: number, perPage = 5, userId: string) {
     try {
       page = (page - 1) > 0 ? (page - 1) : 0;
+      perPage = perPage * 1;
       return await this.campaignModel.find({userId}).limit(perPage).skip(perPage * page).exec();
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { CampaignService } from './campaign.service';
 import { CreateCampaignDto } from './dto/create-campaign.dto';
 import { UpdateCampaignDto } from './dto/update-campaign.dto';
+import { PaginationDto } from './dto/pagination.dto';
 import { CurrentUser } from '../decorators/user.decorator';
 import { AuthGuard } from '@nestjs/passport';
 
@@ -15,9 +16,9 @@ export class CampaignController {
     return this.campaignService.create(createCampaignDto, currentUser.userId);
   }
 
-  @Get(':page')
-  findAll(@Param(':page') page: number, perPage = 5, @CurrentUser() currentUser) {
-    return this.campaignService.findAll(page, perPage, currentUser.userId);
+  @Get()
+  findAll(@Query() query: PaginationDto, @CurrentUser() currentUser) {
+    return this.campaignService.findAll(query.page, query.perPage, currentUser.userId);
   }
 
   @Get(':id')
