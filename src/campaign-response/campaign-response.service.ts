@@ -6,10 +6,12 @@ import {
   CampaignResponse,
   CampaignResponseDocument,
 } from './entities/campaign-response.schema';
+import { Campaigns } from '../campaign/entities/campaign.schema';
 
 @Injectable()
 export class CampaignResponseService {
-  constructor(@InjectModel(CampaignResponse.name) private campaignResponseModel: Model<CampaignResponseDocument>) {}
+  constructor(
+    @InjectModel(CampaignResponse.name) private campaignResponseModel: Model<CampaignResponseDocument>) {}
 
   async create(createCampaignResponseDto: CreateCampaignResponseInterface) {
     try {
@@ -23,10 +25,12 @@ export class CampaignResponseService {
     try {
       perPage = (perPage) ? perPage : 5;
       page = (page - 1) > 0 ? (page - 1) : 0;
-      return await this.campaignResponseModel.find({ campId }).populate({
-        path: 'campId',
-        match: { userId }
-      }).limit(perPage).skip(perPage * page).exec()
+      //todo: fix it (join not working)
+      const response = await this.campaignResponseModel.find({ campId })
+        .populate('campId', 'name, _id', Campaigns.name, {userId: userId})
+        .limit(perPage).skip(perPage * page)
+        .exec();
+      return response.filter(res => res.campId !== null);
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }

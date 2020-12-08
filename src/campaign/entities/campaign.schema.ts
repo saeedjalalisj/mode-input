@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/entities/user.schema';
+import { CampaignResponse } from '../../campaign-response/entities/campaign-response.schema';
 
 
 //todo: add schema string validation
@@ -33,13 +34,13 @@ export class Campaigns {
   star_status: string;
   
   @Prop(String)
-  type: string
+  type: string;
 
   @Prop({
     type:  mongoose.Schema.Types.ObjectId,
     ref: User.name
   })
-  userId: string
+  userId: string;
 }
 
 export type CampaignsDocument = Campaigns & Document;

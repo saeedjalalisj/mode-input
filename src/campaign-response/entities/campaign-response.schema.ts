@@ -7,7 +7,8 @@ import { Campaigns } from '../../campaign/entities/campaign.schema';
 export class CampaignResponse {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    ref: Campaigns.name
+    ref: Campaigns.name,
+    required: true
   })
   campId: string;
 
@@ -28,6 +29,12 @@ export class CampaignResponse {
 
   @Prop(String)
   agent: string;
+
+  @Prop({
+    type: Date,
+    default: Date.now
+  })
+  time: Date;
 }
 
 export type CampaignResponseDocument = CampaignResponse & Document;
