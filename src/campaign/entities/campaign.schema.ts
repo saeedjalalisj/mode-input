@@ -1,60 +1,46 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
+import { User } from '../../user/entities/user.schema';
+import { CampaignResponse } from '../../campaign-response/entities/campaign-response.schema';
 
+
+//todo: add schema string validation
+// validation: not working
 @Schema()
 export class Campaigns {
-  @Prop()
+  @Prop(String)
   name: string;
 
-  @Prop()
+  @Prop(String)
   title: string;
 
-  @Prop()
+  @Prop(String)
   subtitle: string;
 
-  @Prop()
+  @Prop(String)
   thanks_message: string;
 
-  @Prop()
-  email_status: {
-    type: string,
-    enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  @Prop(String)
+  email_status: string;
 
-  @Prop()
-  full_name_status: {
-    type: string,
-    enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  @Prop(String)
+  full_name_status: string
 
-  @Prop()
-  description_status: {
-    type: string,
-    enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  @Prop(String)
+  description_status:string
 
-  @Prop()
-  star_status: {
-    type: string,
-    enum: ['required', 'optional', 'hidden'],
-    default: 'hidden'
-  };
+  @Prop(String)
+  star_status: string;
+  
+  @Prop(String)
+  type: string;
 
-  @Prop()
-  type: {
-    type: string,
-    enum: ['contact', 'feedback', 'subscribe']
-  };
-
-  @Prop()
-  user_id: {
+  @Prop({
     type:  mongoose.Schema.Types.ObjectId,
-    ref: 'User'
-  }
+    ref: User.name
+  })
+  userId: string;
 }
 
 export type CampaignsDocument = Campaigns & Document;

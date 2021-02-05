@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+import { CampaignResponseController } from './campaign-response.controller';
+import { CampaignResponseService } from './campaign-response.service';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as mongoose from "mongoose";
 import { MongooseModule } from '@nestjs/mongoose';
-import { User, UserSchema } from './entities/user.schema';
+import { CampaignResponse, CampaignResponseSchema } from './entities/campaign-response.schema';
 
-describe('UserController', () => {
-  let controller: UserController;
+describe('CampaignResponseController', () => {
+  let controller: CampaignResponseController;
 
   let mongod: MongoMemoryServer = new MongoMemoryServer({
     autoStart: true,
@@ -21,9 +21,9 @@ describe('UserController', () => {
   beforeEach(async () => {
     mongod = new MongoMemoryServer();
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [UserController],
-      providers: [UserService],
-      imports:[
+      controllers: [CampaignResponseController],
+      providers: [CampaignResponseService],
+      imports: [
         MongooseModule.forRootAsync({
           useFactory: async () => ({
             uri: await mongod.getUri(),
@@ -32,11 +32,11 @@ describe('UserController', () => {
             useCreateIndex: true,
           }),
         }),
-        MongooseModule.forFeature([{ name: User.name, schema: UserSchema }])
+        MongooseModule.forFeature([{ name: CampaignResponse.name, schema: CampaignResponseSchema }]),
       ]
     }).compile();
 
-    controller = module.get<UserController>(UserController);
+    controller = module.get<CampaignResponseController>(CampaignResponseController);
   });
 
   it('should be defined', () => {
