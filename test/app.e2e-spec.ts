@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -23,12 +23,11 @@ describe('AppController (e2e)', () => {
   });
 
   it('/tracking-code (GET)', () => {
-      const expected = { trackingCode: 'rand_string' };
       return request(app.getHttpServer())
         .get('/tracking-code')
         .expect(200)
         .then((res) => {
-          expect(res.body).toContain(expected);
+          expect(res.body).toHaveProperty('trackingCode');
         });
   });
 
