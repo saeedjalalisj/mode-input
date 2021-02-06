@@ -21,4 +21,15 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .expect('Hello World!');
   });
+
+  it('/tracking-code (GET)', () => {
+      const expected = { trackingCode: 'rand_string' };
+      return request(app.getHttpServer())
+        .get('/tracking-code')
+        .expect(200)
+        .then((res) => {
+          expect(res.body).toContain(expected);
+        });
+  });
+
 });

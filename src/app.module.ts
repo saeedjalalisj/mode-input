@@ -7,6 +7,7 @@ import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { CampaignModule } from './campaign/campaign.module';
 import { CampaignResponseModule } from './campaign-response/campaign-response.module';
+import { TrackingCodeModule } from './tracking-code/tracking-code.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -21,6 +22,7 @@ import configuration from './config/configuration';
     AuthModule,
     CampaignModule,
     CampaignResponseModule,
+    TrackingCodeModule,
   ],
   controllers: [AppController],
   providers: [
