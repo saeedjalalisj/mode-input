@@ -2,15 +2,14 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import * as mongoose from 'mongoose';
 import { User } from '../../user/entities/user.schema';
-import { CampaignResponse } from '../../campaign-response/entities/campaign-response.schema';
 
-
-//todo: add schema string validation
-// validation: not working
 @Schema()
 export class Campaigns {
   @Prop(String)
   name: string;
+
+  @Prop(String)
+  type: string;
 
   @Prop(String)
   title: string;
@@ -18,23 +17,41 @@ export class Campaigns {
   @Prop(String)
   subtitle: string;
 
+  @Prop(Boolean)
+  allow_rating: boolean;
+
+  @Prop(Boolean)
+  require_rating: boolean;
+
+  @Prop(Boolean)
+  allow_full_name: boolean;
+
+  @Prop(Boolean)
+  require_full_name: boolean;
+
+  @Prop(Boolean)
+  allow_email: boolean;
+
+  @Prop(Boolean)
+  require_email: boolean;
+
+  @Prop(Boolean)
+  allow_mobile: boolean;
+
+  @Prop(Boolean)
+  require_mobile: boolean;
+
+  @Prop(Boolean)
+  allow_comment: boolean;
+
+  @Prop(Boolean)
+  require_comment: boolean;
+
   @Prop(String)
   thanks_message: string;
 
-  @Prop(String)
-  email_status: string;
-
-  @Prop(String)
-  full_name_status: string
-
-  @Prop(String)
-  description_status:string
-
-  @Prop(String)
-  star_status: string;
-  
-  @Prop(String)
-  type: string;
+  @Prop(Boolean)
+  show_thanks_message: boolean;
 
   @Prop({
     type:  mongoose.Schema.Types.ObjectId,

@@ -69,11 +69,13 @@ describe('CampaignService', () => {
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     const userId = await createUser(userService);
     const created = await service.create(createCampaignDto, userId);
@@ -90,11 +92,13 @@ describe('CampaignService', () => {
         title: 'say more?',
         subtitle: 'is that is good?',
         thanks_message: 'thanks',
-        email_status: 'optional',
-        full_name_status: 'optional',
-        star_status: 'optional',
-        description_status: 'optional',
-        type: 'feedback',
+        allow_rating: true,
+        require_rating: true,
+        allow_full_name: false,
+        allow_mobile: false,
+        allow_comment: false,
+        allow_email: false,
+        type: 'feedback'
       };
       await service.create(createCampaignDto, userId);
     }
@@ -104,15 +108,17 @@ describe('CampaignService', () => {
 
   it('should find campaign with id', async () => {
     const createCampaignDto: CreateCampaignDto = {
-      name: `new_camp`,
+      name: 'new_camp',
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     const userId = await createUser(userService);
     const created = await service.create(createCampaignDto, userId);
@@ -122,30 +128,34 @@ describe('CampaignService', () => {
 
   it('should be update campaign ', async () => {
     const createCampaignDto: CreateCampaignDto = {
-      name: `new_camp`,
+      name: 'new_camp',
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
 
     const userId = await createUser(userService);
     const created = await service.create(createCampaignDto, userId);
 
     const updateCampaignDto: UpdateCampaignDto = {
-      name: `new_camp1`,
+      name: 'new_camp',
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      full_name_status: 'optional',
-      email_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     await service.update(created.id, updateCampaignDto, userId);
     const result = await service.findOne(created.id, userId);

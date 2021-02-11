@@ -76,11 +76,13 @@ describe('CampaignResponseService', () => {
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     const userId = await createUser(userService);
     const createdCampaign = await campaignService.create(createCampaignDto, userId);
@@ -107,11 +109,13 @@ describe('CampaignResponseService', () => {
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     const userId = await createUser(userService);
     const createdCampaign = await campaignService.create(createCampaignDto, userId);
@@ -143,11 +147,13 @@ describe('CampaignResponseService', () => {
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     const userId = await createUser(userService);
     const createdCampaign = await campaignService.create(createCampaignDto, userId);
@@ -162,11 +168,13 @@ describe('CampaignResponseService', () => {
       title: 'say more?',
       subtitle: 'is that is good?',
       thanks_message: 'thanks',
-      email_status: 'optional',
-      full_name_status: 'optional',
-      star_status: 'optional',
-      description_status: 'optional',
-      type: 'feedback',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback'
     };
     const userId = await createUser(userService);
     const createdCampaign = await campaignService.create(createCampaignDto, userId);

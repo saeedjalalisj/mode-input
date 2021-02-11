@@ -38,7 +38,7 @@ export class CampaignService {
   }
 
   async update(id: string, updateCampaignDto: UpdateCampaignDto, userId: string) {
-    try { // todo: remove ts-list problem
+    try {
       return await this.campaignModel.updateOne({ _id: id, userId }, {
         $set: updateCampaignDto,
       });
