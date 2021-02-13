@@ -6,14 +6,21 @@ export class CreateCampaignResponseDto {
   email?: string;
 
   @IsOptional()
+  @IsEmail()
+  mobile?: string;
+
+  @IsOptional()
   @IsString()
   full_name?: string;
 
   @IsOptional()
   @IsString()
-  star?: string;
+  rate?: string;
 
   @IsOptional()
   @IsString()
-  description?: string;
+  comment?: string;
+
+  @IsString()
+  trackingId?: string;
 }

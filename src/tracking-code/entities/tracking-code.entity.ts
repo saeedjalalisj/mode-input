@@ -8,7 +8,7 @@ export class TrackingCode {
 
   @Prop({
     type: Date,
-    default: Date.now
+    default: Date.now,
   })
   createAt: Date;
 }

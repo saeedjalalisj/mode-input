@@ -6,7 +6,7 @@ export class TrackingCodeController {
   constructor(private readonly trackingCodeService: TrackingCodeService) {}
 
   @Get()
-  create(): Promise<{ trackingCode: string }> {
+  create() {
     return this.trackingCodeService.create();
   }
 

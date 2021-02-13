@@ -3,33 +3,44 @@ import { CampaignResponseService } from './campaign-response.service';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import * as mongoose from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
-import { CampaignResponse, CampaignResponseSchema } from './entities/campaign-response.schema';
+import {
+  CampaignResponse,
+  CampaignResponseSchema,
+} from './entities/campaign-response.schema';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { CreateCampaignDto } from '../campaign/dto/create-campaign.dto';
 import { CampaignService } from '../campaign/campaign.service';
 import { UserService } from '../user/user.service';
 import { CreateCampaignResponseDto } from './dto/create-campaign-response.dto';
 import { CreateCampaignResponseInterface } from './interface/create-campaign-response.interface';
-import { Campaigns, CampaignsSchema } from '../campaign/entities/campaign.schema';
+import {
+  Campaigns,
+  CampaignsSchema,
+} from '../campaign/entities/campaign.schema';
 import { User, UserSchema } from '../user/entities/user.schema';
+import { TrackingCodeService } from '../tracking-code/tracking-code.service';
+import {
+  TrackingCode,
+  TrackingCodeSchema,
+} from '../tracking-code/entities/tracking-code.entity';
 
-async function createUser (userService) {
+async function createUser(userService) {
   const mockUser: CreateUserDto = {
     username: 's1',
     password: '1234',
     email: 'test@gmail.com',
     name: 's',
-    family: 'j'
+    family: 'j',
   };
   const user = await userService.create(mockUser);
-  return user.id
+  return user.id;
 }
-
 
 describe('CampaignResponseService', () => {
   let service: CampaignResponseService;
   let userService: UserService;
   let campaignService: CampaignService;
+  let trackingCodeService: TrackingCodeService;
 
   let mongod: MongoMemoryServer = new MongoMemoryServer({
     autoStart: true,
@@ -43,7 +54,12 @@ describe('CampaignResponseService', () => {
   beforeEach(async () => {
     mongod = new MongoMemoryServer();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CampaignResponseService, CampaignService, UserService],
+      providers: [
+        CampaignResponseService,
+        CampaignService,
+        UserService,
+        TrackingCodeService,
+      ],
       imports: [
         MongooseModule.forRootAsync({
           useFactory: async () => ({
@@ -55,15 +71,17 @@ describe('CampaignResponseService', () => {
         }),
         MongooseModule.forFeature([
           { name: Campaigns.name, schema: CampaignsSchema },
-          { name: User.name, schema: UserSchema},
-          { name: CampaignResponse.name, schema: CampaignResponseSchema }
-        ])
-      ]
+          { name: User.name, schema: UserSchema },
+          { name: CampaignResponse.name, schema: CampaignResponseSchema },
+          { name: TrackingCode.name, schema: TrackingCodeSchema },
+        ]),
+      ],
     }).compile();
 
     service = module.get<CampaignResponseService>(CampaignResponseService);
     userService = module.get<UserService>(UserService);
     campaignService = module.get<CampaignService>(CampaignService);
+    trackingCodeService = module.get<TrackingCodeService>(TrackingCodeService);
   });
 
   it('should be defined', () => {
@@ -82,24 +100,29 @@ describe('CampaignResponseService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
     };
     const userId = await createUser(userService);
-    const createdCampaign = await campaignService.create(createCampaignDto, userId);
+    const createdCampaign = await campaignService.create(
+      createCampaignDto,
+      userId,
+    );
+    const createdTrackingCode = await trackingCodeService.create();
     const createCampaignResponseDto: CreateCampaignResponseDto = {
-      star: '1',
+      rate: '1',
       email: 'saeed@test.com',
       full_name: 'test tester',
-      description: 'so good'
+      comment: 'so good',
+      trackingId: createdTrackingCode._id,
     };
 
     const campResp: CreateCampaignResponseInterface = {
       campId: createdCampaign.id,
-      ...createCampaignResponseDto
-    }
+      ...createCampaignResponseDto,
+    };
 
     const created = await service.create(campResp);
-    expect(created.star).toBe('1');
+    expect(created.rate).toBe('1');
   });
 
   it('should be find all ', async () => {
@@ -115,29 +138,33 @@ describe('CampaignResponseService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
     };
     const userId = await createUser(userService);
-    const createdCampaign = await campaignService.create(createCampaignDto, userId);
+    const createdCampaign = await campaignService.create(
+      createCampaignDto,
+      userId,
+    );
 
     for (let i = 0; i <= 5; i++) {
+      const createdTrackingCode = await trackingCodeService.create();
       const createCampaignResponseDto: CreateCampaignResponseDto = {
-        star: `${i}`,
+        rate: `${i}`,
         email: 'saeed@test.com',
         full_name: 'test tester',
-        description: 'so good'
+        comment: 'so good',
+        trackingId: createdTrackingCode._id,
       };
 
       const campResp: CreateCampaignResponseInterface = {
         campId: createdCampaign.id,
-        ...createCampaignResponseDto
-      }
+        ...createCampaignResponseDto,
+      };
 
       await service.create(campResp);
     }
     const result = await service.findAll(createdCampaign.id, userId, 1, 3);
     expect(result.length).toBe(3);
-
   });
 
   it('find all return no result ', async () => {
@@ -153,10 +180,13 @@ describe('CampaignResponseService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
     };
     const userId = await createUser(userService);
-    const createdCampaign = await campaignService.create(createCampaignDto, userId);
+    const createdCampaign = await campaignService.create(
+      createCampaignDto,
+      userId,
+    );
 
     const result = await service.findAll(createdCampaign.id, userId, 1, 3);
     expect(result.length).toBe(0);
@@ -174,26 +204,30 @@ describe('CampaignResponseService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
     };
     const userId = await createUser(userService);
-    const createdCampaign = await campaignService.create(createCampaignDto, userId);
+    const createdCampaign = await campaignService.create(
+      createCampaignDto,
+      userId,
+    );
 
+    const createdTrackingCode = await trackingCodeService.create();
     const createCampaignResponseDto: CreateCampaignResponseDto = {
-      star: '1',
+      rate: '1',
       email: 'saeed@test.com',
       full_name: 'test tester',
-      description: 'so good'
+      comment: 'so good',
+      trackingId: createdTrackingCode._id,
     };
 
     const campResp: CreateCampaignResponseInterface = {
       campId: createdCampaign.id,
-      ...createCampaignResponseDto
-    }
+      ...createCampaignResponseDto,
+    };
 
     const created = await service.create(campResp);
     const result = await service.findOne(created.id);
-    expect(result.star).toBe('1');
+    expect(result.rate).toBe('1');
   });
-
 });
