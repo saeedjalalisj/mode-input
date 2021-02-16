@@ -27,7 +27,7 @@ describe('AppController (e2e)', () => {
         .get('/tracking-code')
         .expect(200)
         .then((res) => {
-          expect(res.body).toHaveProperty('trackingCode');
+          expect(res.body).toHaveProperty('code');
         });
   });
 
