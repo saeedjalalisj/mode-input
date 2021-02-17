@@ -23,12 +23,22 @@ describe('AppController (e2e)', () => {
   });
 
   it('/tracking-code (GET)', () => {
-      return request(app.getHttpServer())
-        .get('/tracking-code')
-        .expect(200)
-        .then((res) => {
-          expect(res.body).toHaveProperty('code');
-        });
+    return request(app.getHttpServer())
+      .get('/tracking-code')
+      .expect(200)
+      .then(res => {
+        expect(res.body).toHaveProperty('code');
+      });
   });
 
+  it('/site (POST)', () => {
+    return request(app.getHttpServer())
+      .post('/site')
+      .send({ name: 'test', url: 'test.com' })
+      .expect(201)
+      .then(res => {
+        expect(res.body).toHaveProperty('name');
+        expect(res.body).toHaveProperty('url');
+      });
+  });
 });

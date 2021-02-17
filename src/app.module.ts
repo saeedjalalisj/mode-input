@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CampaignModule } from './campaign/campaign.module';
 import { CampaignResponseModule } from './campaign-response/campaign-response.module';
 import { TrackingCodeModule } from './tracking-code/tracking-code.module';
+import { SiteModule } from './site/site.module';
 import configuration from './config/configuration';
 
 @Module({
@@ -16,17 +17,16 @@ import configuration from './config/configuration';
     ConfigModule.forRoot({
       envFilePath: '.development.env',
       load: [configuration],
-      isGlobal: true
+      isGlobal: true,
     }),
     UserModule,
     AuthModule,
     CampaignModule,
     CampaignResponseModule,
     TrackingCodeModule,
+    SiteModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
