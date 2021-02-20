@@ -1,11 +1,11 @@
-import { IsNotEmpty, IsString, IsUrl } from 'class-validator';
+import { IsNotEmpty, IsString, IsFQDN } from 'class-validator';
 
 export class CreateSiteDto {
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @IsUrl()
   @IsNotEmpty()
+  @IsFQDN()
   url: string;
 }

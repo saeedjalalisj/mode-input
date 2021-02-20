@@ -6,19 +6,22 @@ import {
   Put,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { SiteService } from './site.service';
 import { CreateSiteDto } from './dto/create-site.dto';
 import { UpdateSiteDto } from './dto/update-site.dto';
+import { AuthGuard } from '@nestjs/passport';
+import { CurrentUser } from '../decorators/user.decorator';
 
-// todo: add guard
 @Controller('site')
+@UseGuards(AuthGuard('jwt'))
 export class SiteController {
   constructor(private readonly siteService: SiteService) {}
 
   @Post()
-  create(@Body() createSiteDto: CreateSiteDto) {
-    return this.siteService.create(createSiteDto);
+  create(@Body() createSiteDto: CreateSiteDto, @CurrentUser() currentUser) {
+    return this.siteService.create(createSiteDto, currentUser.userId);
   }
 
   @Get()

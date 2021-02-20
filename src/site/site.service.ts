@@ -13,9 +13,13 @@ export class SiteService {
     private siteModel: Model<SiteDocument>,
   ) {}
 
-  async create(createSiteDto: CreateSiteDto) {
+  async create(createSiteDto: CreateSiteDto, userId: string) {
     try {
-      return await new this.siteModel(createSiteDto).save();
+      const newSite: CreateSiteDto & { userId: string } = {
+        ...createSiteDto,
+        userId,
+      };
+      return await new this.siteModel(newSite).save();
     } catch (err) {
       SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
