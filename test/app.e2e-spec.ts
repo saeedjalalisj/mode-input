@@ -2,11 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
+import { randomUser } from '../src/shared/test/user.mock';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let token: string;
-
+  let rmUser = randomUser();
   // todo: creating test db
   // todo: cleanup after testing
   beforeEach(async () => {
@@ -28,7 +29,7 @@ describe('AppController (e2e)', () => {
   it('/auth/register (POST)', () => {
     return request(app.getHttpServer())
       .post('/auth/register')
-      .send({ username: 'test@gmail.com', password: '123456' })
+      .send({ username: rmUser.email, password: rmUser.password })
       .expect(201)
       .then(res => {
         token = res.body.access_token;
@@ -38,7 +39,7 @@ describe('AppController (e2e)', () => {
   it('/auth/login (POST)', () => {
     return request(app.getHttpServer())
       .post('/auth/login')
-      .send({ username: 'test@gmail.com', password: '123456' })
+      .send({ username: rmUser.email, password: rmUser.password })
       .expect(201)
       .then(res => {
         token = res.body.access_token;

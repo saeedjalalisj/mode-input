@@ -15,7 +15,7 @@ import configuration from './config/configuration';
   imports: [
     MongooseModule.forRoot('mongodb://localhost/um'),
     ConfigModule.forRoot({
-      envFilePath: '.development.env',
+      envFilePath: (process.env.NODE_ENV === 'development') ? '.development.env' : '.test.env',
       load: [configuration],
       isGlobal: true,
     }),
