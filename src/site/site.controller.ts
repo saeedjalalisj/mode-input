@@ -52,7 +52,7 @@ export class SiteController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.siteService.remove(+id);
+  remove(@Param('id') id: string, @CurrentUser() currentUser) {
+    return this.siteService.remove(id, currentUser.userId);
   }
 }

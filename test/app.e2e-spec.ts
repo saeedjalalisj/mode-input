@@ -128,4 +128,11 @@ describe('AppController (e2e)', () => {
       .send({ name: 'test2', url: 'test2.com' })
       .expect(204);
   });
+
+  it('/site/:id (DELETE)', async () => {
+    return request(app.getHttpServer())
+      .delete(`/site/${siteId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200);
+  });
 });

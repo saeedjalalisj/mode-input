@@ -115,4 +115,13 @@ describe('SiteController', () => {
     );
     expect(actual.ok).toBe(1);
   });
+
+  it('should delete site', async () => {
+    const userId = await testHelper.creatingUser();
+    const currentUser = { userId };
+    const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
+    const createdSite = await controller.create(createdDto, currentUser);
+    const actual = await controller.remove(createdSite._id, currentUser);
+    expect(actual.ok).toBe(1);
+  });
 });

@@ -93,4 +93,12 @@ describe('SiteService', () => {
     const actual = await service.update(created.id, updateSiteDto, userId);
     expect(actual.ok).toBe(1);
   });
+
+  it('should be remove site by id', async () => {
+    const userId = await testHelper.creatingUser();
+    const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
+    const created = await service.create(createdDto, userId);
+    const actual = await service.remove(created.id, userId);
+    expect(actual.ok).toBe(1);
+  });
 });

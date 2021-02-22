@@ -56,7 +56,11 @@ export class SiteService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} site`;
+  async remove(id: string, userId) {
+    try {
+      return await this.siteModel.deleteOne({ _id: id, userId });
+    } catch (err) {
+      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }
