@@ -120,4 +120,12 @@ describe('AppController (e2e)', () => {
         );
       });
   });
+
+  it('/site/:id (PUT)', () => {
+    return request(app.getHttpServer())
+      .put(`/site/${siteId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .send({ name: 'test2', url: 'test2.com' })
+      .expect(204);
+  });
 });

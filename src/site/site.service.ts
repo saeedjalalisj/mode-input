@@ -48,8 +48,12 @@ export class SiteService {
     }
   }
 
-  update(id: number, updateSiteDto: UpdateSiteDto) {
-    return `This action updates a #${id} site`;
+  async update(id: string, updateSiteDto: UpdateSiteDto, userId: string) {
+    try {
+      return await this.siteModel.updateOne({ _id: id, userId }, updateSiteDto);
+    } catch (err) {
+      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   remove(id: number) {

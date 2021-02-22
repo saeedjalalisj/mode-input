@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Query,
+  HttpCode,
 } from '@nestjs/common';
 import { SiteService } from './site.service';
 import { CreateSiteDto } from './dto/create-site.dto';
@@ -41,8 +42,13 @@ export class SiteController {
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateSiteDto: UpdateSiteDto) {
-    return this.siteService.update(+id, updateSiteDto);
+  @HttpCode(204)
+  update(
+    @Param('id') id: string,
+    @Body() updateSiteDto: UpdateSiteDto,
+    @CurrentUser() currentUser,
+  ) {
+    return this.siteService.update(id, updateSiteDto, currentUser.userId);
   }
 
   @Delete(':id')

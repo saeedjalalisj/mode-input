@@ -12,6 +12,7 @@ import { TestHelpers } from '../shared/test/test.helpers';
 import { UserService } from '../user/user.service';
 import { User, UserSchema } from '../user/entities/user.schema';
 import { PaginationDto } from '../shared/pagination.dto';
+import { UpdateSiteDto } from './dto/update-site.dto';
 
 describe('SiteController', () => {
   let controller: SiteController;
@@ -99,5 +100,19 @@ describe('SiteController', () => {
     };
     const actual = await controller.findAll(query, currentUser);
     expect(actual.length).toBe(2);
+  });
+
+  it('should be update site ', async () => {
+    const userId = await testHelper.creatingUser();
+    const currentUser = { userId };
+    const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
+    const createdSite = await controller.create(createdDto, currentUser);
+    const updateSiteDto: UpdateSiteDto = { name: 'test1', url: 'test1.com' };
+    const actual = await controller.update(
+      createdSite.id,
+      updateSiteDto,
+      currentUser,
+    );
+    expect(actual.ok).toBe(1);
   });
 });

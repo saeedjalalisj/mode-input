@@ -8,6 +8,7 @@ import { Site, SiteSchema } from './entities/site.entity';
 import { TestHelpers } from '../shared/test/test.helpers';
 import { UserService } from '../user/user.service';
 import { User, UserSchema } from '../user/entities/user.schema';
+import { UpdateSiteDto } from './dto/update-site.dto';
 
 describe('SiteService', () => {
   let service: SiteService;
@@ -82,5 +83,14 @@ describe('SiteService', () => {
     const page = 1;
     const actual = await service.findAll(page, perPage, userId);
     expect(actual.length).toBe(2);
+  });
+
+  it('should be update site', async () => {
+    const userId = await testHelper.creatingUser();
+    const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
+    const created = await service.create(createdDto, userId);
+    const updateSiteDto: UpdateSiteDto = { name: 'test1', url: 'test1.com' };
+    const actual = await service.update(created.id, updateSiteDto, userId);
+    expect(actual.ok).toBe(1);
   });
 });
