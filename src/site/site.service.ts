@@ -29,8 +29,12 @@ export class SiteService {
     return `This action returns all site`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} site`;
+  async findOne(id: string) {
+    try {
+      return await this.siteModel.findById(id);
+    } catch (err) {
+      SendError(err, HttpStatus.NOT_FOUND);
+    }
   }
 
   update(id: number, updateSiteDto: UpdateSiteDto) {

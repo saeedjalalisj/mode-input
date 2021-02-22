@@ -73,4 +73,15 @@ describe('SiteController', () => {
       url: expect.any(String),
     });
   });
+
+  it('should be find one site', async () => {
+    const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
+    const userId = await testHelper.creatingUser();
+    const currentUser = { userId };
+    const newSite = await controller.create(createdDto, currentUser);
+    expect(await controller.findOne(newSite.id)).toMatchObject({
+      name: expect.any(String),
+      url: expect.any(String),
+    })
+  })
 });

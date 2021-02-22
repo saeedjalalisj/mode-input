@@ -63,4 +63,12 @@ describe('SiteService', () => {
       }),
     );
   });
+
+  it('should be find new site', async () => {
+    const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
+    const userId = await testHelper.creatingUser();
+    const newSite = await service.create(createdDto, userId);
+    const actual = await service.findOne(newSite._id);
+    expect(actual._id).toEqual(newSite._id);
+  });
 });

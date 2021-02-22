@@ -7,9 +7,9 @@ import { randomUser } from '../src/shared/test/user.mock';
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let token: string;
-  let rmUser = randomUser();
-  // todo: creating test db
-  // todo: cleanup after testing
+  let siteId: string;
+  const rmUser = randomUser();
+
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -62,8 +62,28 @@ describe('AppController (e2e)', () => {
       .set('Authorization', 'Bearer ' + token)
       .expect(201)
       .then(res => {
+        siteId = res.body._id;
         expect(res.body).toHaveProperty('name');
         expect(res.body).toHaveProperty('url');
       });
+  });
+
+  it('/site (GET)', () => {
+    return request(app.getHttpServer())
+      .get(`/site/${siteId}`)
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toHaveProperty('name');
+        expect(res.body).toHaveProperty('url');
+        expect(res.body).toHaveProperty('userId');
+        expect(res.body).toHaveProperty('createdAt');
+      });
+  });
+  it('/site (GET) Not Found', () => {
+    return request(app.getHttpServer())
+      .get('/site/1')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(404);
   });
 });
