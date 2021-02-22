@@ -37,8 +37,8 @@ export class SiteController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.siteService.findOne(id);
+  findOne(@Param('id') id: string, @CurrentUser() currentUser) {
+    return this.siteService.findOne(id, currentUser.userId);
   }
 
   @Put(':id')

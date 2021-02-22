@@ -81,7 +81,7 @@ describe('SiteController', () => {
     const userId = await testHelper.creatingUser();
     const currentUser = { userId };
     const newSite = await controller.create(createdDto, currentUser);
-    expect(await controller.findOne(newSite.id)).toMatchObject({
+    expect(await controller.findOne(newSite.id, currentUser)).toMatchObject({
       name: expect.any(String),
       url: expect.any(String),
     });

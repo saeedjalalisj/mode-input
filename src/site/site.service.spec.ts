@@ -69,7 +69,7 @@ describe('SiteService', () => {
     const createdDto: CreateSiteDto = { name: 'test', url: 'test.com' };
     const userId = await testHelper.creatingUser();
     const newSite = await service.create(createdDto, userId);
-    const actual = await service.findOne(newSite._id);
+    const actual = await service.findOne(newSite._id, userId);
     expect(actual._id).toEqual(newSite._id);
   });
 

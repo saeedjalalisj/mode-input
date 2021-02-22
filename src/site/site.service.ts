@@ -39,10 +39,9 @@ export class SiteService {
     }
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, userId: string) {
     try {
-      // todo: only show user created site -> add site_id
-      return await this.siteModel.findById(id);
+      return await this.siteModel.findOne({ _id: id, userId });
     } catch (err) {
       SendError(err, HttpStatus.NOT_FOUND);
     }
