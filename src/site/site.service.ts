@@ -25,12 +25,23 @@ export class SiteService {
     }
   }
 
-  findAll() {
-    return `This action returns all site`;
+  async findAll(page: number, perPage = 5, userId: string) {
+    try {
+      page = page - 1 > 0 ? page - 1 : 0;
+      perPage = perPage * 1;
+      return await this.siteModel
+        .find({ userId })
+        .limit(perPage)
+        .skip(perPage * page)
+        .exec();
+    } catch (err) {
+      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   async findOne(id: string) {
     try {
+      // todo: only show user created site -> add site_id
       return await this.siteModel.findById(id);
     } catch (err) {
       SendError(err, HttpStatus.NOT_FOUND);

@@ -7,12 +7,14 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { SiteService } from './site.service';
 import { CreateSiteDto } from './dto/create-site.dto';
 import { UpdateSiteDto } from './dto/update-site.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { CurrentUser } from '../decorators/user.decorator';
+import { PaginationDto } from '../shared/pagination.dto';
 
 @Controller('site')
 @UseGuards(AuthGuard('jwt'))
@@ -25,8 +27,12 @@ export class SiteController {
   }
 
   @Get()
-  findAll() {
-    return this.siteService.findAll();
+  findAll(@Query() query: PaginationDto, @CurrentUser() currentUser) {
+    return this.siteService.findAll(
+      query.page,
+      query.perPage,
+      currentUser.userId,
+    );
   }
 
   @Get(':id')

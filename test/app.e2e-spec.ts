@@ -68,7 +68,7 @@ describe('AppController (e2e)', () => {
       });
   });
 
-  it('/site (GET)', () => {
+  it('/site/:id (GET)', () => {
     return request(app.getHttpServer())
       .get(`/site/${siteId}`)
       .set('Authorization', 'Bearer ' + token)
@@ -80,10 +80,44 @@ describe('AppController (e2e)', () => {
         expect(res.body).toHaveProperty('createdAt');
       });
   });
-  it('/site (GET) Not Found', () => {
+  it('/site/:id (GET) Not Found', () => {
     return request(app.getHttpServer())
       .get('/site/1')
       .set('Authorization', 'Bearer ' + token)
       .expect(404);
+  });
+
+  it('/site (GET) ', () => {
+    return request(app.getHttpServer())
+      .get('/site')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              name: expect.any(String),
+              url: expect.any(String),
+            }),
+          ]),
+        );
+      });
+  });
+
+  it('/site?perPage=2&page=1 (GET) ', () => {
+    return request(app.getHttpServer())
+      .get('/site?perPage=2&page=1')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(200)
+      .then(res => {
+        expect(res.body).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              name: expect.any(String),
+              url: expect.any(String),
+            }),
+          ]),
+        );
+      });
   });
 });

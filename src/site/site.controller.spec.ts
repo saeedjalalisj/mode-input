@@ -11,6 +11,7 @@ import { ExecutionContext } from '@nestjs/common';
 import { TestHelpers } from '../shared/test/test.helpers';
 import { UserService } from '../user/user.service';
 import { User, UserSchema } from '../user/entities/user.schema';
+import { PaginationDto } from '../shared/pagination.dto';
 
 describe('SiteController', () => {
   let controller: SiteController;
@@ -82,6 +83,21 @@ describe('SiteController', () => {
     expect(await controller.findOne(newSite.id)).toMatchObject({
       name: expect.any(String),
       url: expect.any(String),
-    })
-  })
+    });
+  });
+
+  it('should be find all site', async () => {
+    const userId = await testHelper.creatingUser();
+    const currentUser = { userId };
+    for (let i = 1; i <= 5; i++) {
+      const createdDto: CreateSiteDto = { name: `test${i}`, url: 'test.com' };
+      await controller.create(createdDto, currentUser);
+    }
+    const query: PaginationDto = {
+      perPage: 2,
+      page: 1,
+    };
+    const actual = await controller.findAll(query, currentUser);
+    expect(actual.length).toBe(2);
+  });
 });

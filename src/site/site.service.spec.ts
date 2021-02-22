@@ -71,4 +71,16 @@ describe('SiteService', () => {
     const actual = await service.findOne(newSite._id);
     expect(actual._id).toEqual(newSite._id);
   });
+
+  it('should be find all sites', async () => {
+    const userId = await testHelper.creatingUser();
+    for (let i = 0; i < 5; i++) {
+      const createdDto: CreateSiteDto = { name: `test${i}`, url: 'test.com' };
+      await service.create(createdDto, userId);
+    }
+    const perPage = 2;
+    const page = 1;
+    const actual = await service.findAll(page, perPage, userId);
+    expect(actual.length).toBe(2);
+  });
 });
