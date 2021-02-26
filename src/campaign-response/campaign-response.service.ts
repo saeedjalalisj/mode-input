@@ -6,13 +6,20 @@ import {
   CampaignResponse,
   CampaignResponseDocument,
 } from './entities/campaign-response.schema';
-import { Campaigns } from '../campaign/entities/campaign.schema';
+import {
+  Campaigns,
+  CampaignsDocument,
+} from '../campaign/entities/campaign.schema';
+import { StatusCampaignResponseDto } from './dto/status-campaign-response.dto';
+import { SendError } from '../shared/sendError';
 
 @Injectable()
 export class CampaignResponseService {
   constructor(
     @InjectModel(CampaignResponse.name)
     private campaignResponseModel: Model<CampaignResponseDocument>,
+    @InjectModel(Campaigns.name)
+    private campaignModel: Model<CampaignsDocument>,
   ) {}
 
   async create(createCampaignResponseDto: CreateCampaignResponseInterface) {
@@ -52,6 +59,42 @@ export class CampaignResponseService {
       return this.campaignResponseModel.findOne({ _id: id }).exec();
     } catch (err) {
       throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async status(statusSiteDto: StatusCampaignResponseDto) {
+    try {
+      const campaignResponse = await this.campaignResponseModel.aggregate([
+        {
+          $lookup: {
+            from: 'trackingcodes',
+            as: 'tracking',
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    trackingCode: statusSiteDto.trackingCode,
+                    campId: statusSiteDto.campId,
+                  },
+                },
+              },
+            ],
+          },
+        },
+      ]);
+      if (campaignResponse.length > 0) {
+        throw new Error('nothing to show');
+      } else {
+        return await this.campaignModel.findOne(
+          {
+            siteId: statusSiteDto.siteId,
+            _id: statusSiteDto.campId,
+          },
+          { userId: 0, siteId: 0, __v: 0 },
+        );
+      }
+    } catch (err) {
+      throw new Error(err);
     }
   }
 }

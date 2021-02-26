@@ -9,22 +9,26 @@ import { UpdateCampaignDto } from './dto/update-campaign.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { UserService } from '../user/user.service';
 import { User, UserSchema } from '../user/entities/user.schema';
+import { CreateSiteDto } from '../site/dto/create-site.dto';
+import { SiteService } from '../site/site.service';
+import { Site, SiteSchema } from '../site/entities/site.entity';
 
-async function createUser (userService) {
+async function createUser(userService) {
   const mockUser: CreateUserDto = {
     username: 's1',
     password: '1234',
     email: 'test@gmail.com',
     name: 's',
-    family: 'j'
+    family: 'j',
   };
   const user = await userService.create(mockUser);
-  return user.id
+  return user.id;
 }
 
 describe('CampaignService', () => {
   let service: CampaignService;
   let userService: UserService;
+  let siteService: SiteService;
 
   let mongod: MongoMemoryServer = new MongoMemoryServer({
     autoStart: true,
@@ -38,7 +42,7 @@ describe('CampaignService', () => {
   beforeEach(async () => {
     mongod = new MongoMemoryServer();
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CampaignService, UserService],
+      providers: [CampaignService, UserService, SiteService],
       imports: [
         MongooseModule.forRootAsync({
           useFactory: async () => ({
@@ -50,13 +54,15 @@ describe('CampaignService', () => {
         }),
         MongooseModule.forFeature([
           { name: Campaigns.name, schema: CampaignsSchema },
-          { name: User.name, schema: UserSchema}
+          { name: Site.name, schema: SiteSchema },
+          { name: User.name, schema: UserSchema },
         ]),
       ],
     }).compile();
 
     service = module.get<CampaignService>(CampaignService);
     userService = module.get<UserService>(UserService);
+    siteService = module.get<SiteService>(SiteService);
   });
 
   it('should be defined', () => {
@@ -64,6 +70,12 @@ describe('CampaignService', () => {
   });
 
   it('should be create campaign', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
       title: 'say more?',
@@ -75,9 +87,10 @@ describe('CampaignService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
+      siteId: createdSite._id,
     };
-    const userId = await createUser(userService);
+
     const created = await service.create(createCampaignDto, userId);
     expect(created.name).toBe(createCampaignDto.name);
   });
@@ -85,7 +98,12 @@ describe('CampaignService', () => {
   it('should be find all campaign ', async () => {
     const perPage = 5;
     const page = 1;
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
     const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
     for (let i = 0; i <= 6; i++) {
       const createCampaignDto: CreateCampaignDto = {
         name: `new_camp${i}`,
@@ -98,7 +116,8 @@ describe('CampaignService', () => {
         allow_mobile: false,
         allow_comment: false,
         allow_email: false,
-        type: 'feedback'
+        type: 'feedback',
+        siteId: createdSite._id,
       };
       await service.create(createCampaignDto, userId);
     }
@@ -107,6 +126,12 @@ describe('CampaignService', () => {
   });
 
   it('should find campaign with id', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
       title: 'say more?',
@@ -118,15 +143,21 @@ describe('CampaignService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
+      siteId: createdSite._id,
     };
-    const userId = await createUser(userService);
     const created = await service.create(createCampaignDto, userId);
     const result = await service.findOne(created.id, userId);
     expect(result.name).toBe(createCampaignDto.name);
   });
 
   it('should be update campaign ', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
       title: 'say more?',
@@ -138,10 +169,10 @@ describe('CampaignService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
+      siteId: createdSite._id,
     };
 
-    const userId = await createUser(userService);
     const created = await service.create(createCampaignDto, userId);
 
     const updateCampaignDto: UpdateCampaignDto = {
@@ -155,7 +186,7 @@ describe('CampaignService', () => {
       allow_mobile: false,
       allow_comment: false,
       allow_email: false,
-      type: 'feedback'
+      type: 'feedback',
     };
     await service.update(created.id, updateCampaignDto, userId);
     const result = await service.findOne(created.id, userId);

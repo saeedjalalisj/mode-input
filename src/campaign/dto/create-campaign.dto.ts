@@ -57,4 +57,8 @@ export class CreateCampaignDto {
   @IsBoolean()
   show_thanks_message?: boolean;
 
+  @IsNotEmpty()
+  @IsString()
+  siteId: string;
+
 }

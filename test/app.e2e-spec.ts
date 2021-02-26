@@ -10,7 +10,7 @@ describe('AppController (e2e)', () => {
   let siteId: string;
   const rmUser = randomUser();
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -135,4 +135,11 @@ describe('AppController (e2e)', () => {
       .set('Authorization', 'Bearer ' + token)
       .expect(200);
   });
+
+  // it('/site/status (POST)', async () => {
+  //     return request(app.getHttpServer())
+  //       .post('/response/status')
+  //       .send({ siteId: '', campId: '', trackingCode: '' })
+  //       .expect(200);
+  // });
 });

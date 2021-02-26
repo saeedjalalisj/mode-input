@@ -18,6 +18,7 @@ import { CurrentUser } from '../decorators/user.decorator';
 import { Agent } from '../decorators/agent.decorator';
 import { PaginationDto } from './dto/pagination.dto';
 import { SendError } from '../shared/sendError';
+import { StatusCampaignResponseDto } from './dto/status-campaign-response.dto';
 
 @Controller('response')
 export class CampaignResponseController {
@@ -68,5 +69,10 @@ export class CampaignResponseController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.campaignResponseService.findOne(id);
+  }
+
+  @Post('/status')
+  status(@Body() statusSiteDto: StatusCampaignResponseDto) {
+    return this.campaignResponseService.status(statusSiteDto);
   }
 }

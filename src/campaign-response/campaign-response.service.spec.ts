@@ -23,6 +23,10 @@ import {
   TrackingCode,
   TrackingCodeSchema,
 } from '../tracking-code/entities/tracking-code.entity';
+import { StatusCampaignResponseDto } from './dto/status-campaign-response.dto';
+import { CreateSiteDto } from '../site/dto/create-site.dto';
+import { Site, SiteSchema } from '../site/entities/site.entity';
+import { SiteService } from '../site/site.service';
 
 async function createUser(userService) {
   const mockUser: CreateUserDto = {
@@ -41,6 +45,7 @@ describe('CampaignResponseService', () => {
   let userService: UserService;
   let campaignService: CampaignService;
   let trackingCodeService: TrackingCodeService;
+  let siteService: SiteService;
 
   let mongod: MongoMemoryServer = new MongoMemoryServer({
     autoStart: true,
@@ -59,6 +64,7 @@ describe('CampaignResponseService', () => {
         CampaignService,
         UserService,
         TrackingCodeService,
+        SiteService,
       ],
       imports: [
         MongooseModule.forRootAsync({
@@ -74,6 +80,7 @@ describe('CampaignResponseService', () => {
           { name: User.name, schema: UserSchema },
           { name: CampaignResponse.name, schema: CampaignResponseSchema },
           { name: TrackingCode.name, schema: TrackingCodeSchema },
+          { name: Site.name, schema: SiteSchema },
         ]),
       ],
     }).compile();
@@ -82,6 +89,7 @@ describe('CampaignResponseService', () => {
     userService = module.get<UserService>(UserService);
     campaignService = module.get<CampaignService>(CampaignService);
     trackingCodeService = module.get<TrackingCodeService>(TrackingCodeService);
+    siteService = module.get<SiteService>(SiteService);
   });
 
   it('should be defined', () => {
@@ -89,6 +97,14 @@ describe('CampaignResponseService', () => {
   });
 
   it('should be create response of a campaign', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
+
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
       title: 'say more?',
@@ -101,8 +117,9 @@ describe('CampaignResponseService', () => {
       allow_comment: false,
       allow_email: false,
       type: 'feedback',
+      siteId: createdSite._id,
     };
-    const userId = await createUser(userService);
+
     const createdCampaign = await campaignService.create(
       createCampaignDto,
       userId,
@@ -126,6 +143,13 @@ describe('CampaignResponseService', () => {
   });
 
   it('should be find all ', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
     // user can see only own response and campaigns
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
@@ -139,8 +163,9 @@ describe('CampaignResponseService', () => {
       allow_comment: false,
       allow_email: false,
       type: 'feedback',
+      siteId: createdSite._id,
     };
-    const userId = await createUser(userService);
+
     const createdCampaign = await campaignService.create(
       createCampaignDto,
       userId,
@@ -168,6 +193,14 @@ describe('CampaignResponseService', () => {
   });
 
   it('find all return no result ', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
+
     // user can see only own response and campaigns
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
@@ -181,8 +214,9 @@ describe('CampaignResponseService', () => {
       allow_comment: false,
       allow_email: false,
       type: 'feedback',
+      siteId: createdSite._id,
     };
-    const userId = await createUser(userService);
+
     const createdCampaign = await campaignService.create(
       createCampaignDto,
       userId,
@@ -193,6 +227,13 @@ describe('CampaignResponseService', () => {
   });
 
   it('should findOne return one document', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
     const createCampaignDto: CreateCampaignDto = {
       name: 'new_camp',
       title: 'say more?',
@@ -205,8 +246,9 @@ describe('CampaignResponseService', () => {
       allow_comment: false,
       allow_email: false,
       type: 'feedback',
+      siteId: createdSite._id,
     };
-    const userId = await createUser(userService);
+
     const createdCampaign = await campaignService.create(
       createCampaignDto,
       userId,
@@ -229,5 +271,105 @@ describe('CampaignResponseService', () => {
     const created = await service.create(campResp);
     const result = await service.findOne(created.id);
     expect(result.rate).toBe('1');
+  });
+
+  it('should be return campaign must be answered', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
+    const createCampaignDto: CreateCampaignDto = {
+      name: 'new_camp',
+      title: 'say more?',
+      subtitle: 'is that is good?',
+      thanks_message: 'thanks',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback',
+      siteId: createdSite._id,
+    };
+    const createdCampaign = await campaignService.create(
+      createCampaignDto,
+      userId,
+    );
+    const createdTrackingCode = await trackingCodeService.create();
+    const createCampaignResponseDto: CreateCampaignResponseDto = {
+      rate: '1',
+      email: 'saeed@test.com',
+      full_name: 'test tester',
+      comment: 'so good',
+      trackingId: createdTrackingCode._id,
+    };
+    const campResp: CreateCampaignResponseInterface = {
+      campId: createdCampaign.id,
+      ...createCampaignResponseDto,
+    };
+    await service.create(campResp);
+    const statusDto: StatusCampaignResponseDto = {
+      campId: createdCampaign.id,
+      trackingCode: createdTrackingCode.code,
+      siteId: createdSite._id,
+    };
+    await expect(service.status(statusDto)).rejects.toThrow();
+  });
+
+  it('should be show campaign data to client', async () => {
+    const createSiteDto: CreateSiteDto = {
+      name: 'test',
+      url: 'test.com',
+    };
+    const userId = await createUser(userService);
+    const createdSite = await siteService.create(createSiteDto, userId);
+    const createCampaignDto: CreateCampaignDto = {
+      name: 'new_camp',
+      title: 'say more?',
+      subtitle: 'is that is good?',
+      thanks_message: 'thanks',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback',
+      siteId: createdSite._id,
+    };
+    const createdCampaign = await campaignService.create(
+      createCampaignDto,
+      userId,
+    );
+    const createdTrackingCode = await trackingCodeService.create();
+    const statusDto: StatusCampaignResponseDto = {
+      campId: createdCampaign.id,
+      trackingCode: createdTrackingCode.code,
+      siteId: createdSite._id,
+    };
+    const actual = await service.status(statusDto);
+    const expected = {
+      allow_comment: expect.any(Boolean),
+      allow_email: expect.any(Boolean),
+      allow_full_name: expect.any(Boolean),
+      allow_mobile: expect.any(Boolean),
+      allow_rating: expect.any(Boolean),
+      name: expect.any(String),
+      require_comment: expect.any(Boolean),
+      require_email: expect.any(Boolean),
+      require_full_name: expect.any(Boolean),
+      require_mobile: expect.any(Boolean),
+      require_rating: expect.any(Boolean),
+      show_thanks_message: expect.any(Boolean),
+      subtitle: expect.any(String),
+      thanks_message: expect.any(String),
+      title: expect.any(String),
+      type: expect.any(String),
+      _id: expect.any(mongoose.Types.ObjectId),
+    };
+    expect(actual).toMatchObject(expected);
   });
 });
