@@ -9,13 +9,21 @@ import { CampaignModule } from './campaign/campaign.module';
 import { CampaignResponseModule } from './campaign-response/campaign-response.module';
 import { TrackingCodeModule } from './tracking-code/tracking-code.module';
 import { SiteModule } from './site/site.module';
+import { SeederModule } from './seeder/seeder.module';
 import configuration from './config/configuration';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/um'),
+    MongooseModule.forRoot(
+      `mongodb://localhost/${
+        process.env.NODE_ENV === 'development' ? 'um' : 'testDb'
+      }`,
+    ),
     ConfigModule.forRoot({
-      envFilePath: (process.env.NODE_ENV === 'development') ? '.development.env' : '.test.env',
+      envFilePath:
+        process.env.NODE_ENV === 'development'
+          ? '.development.env'
+          : '.test.env',
       load: [configuration],
       isGlobal: true,
     }),
@@ -25,6 +33,7 @@ import configuration from './config/configuration';
     CampaignResponseModule,
     TrackingCodeModule,
     SiteModule,
+    SeederModule,
   ],
   controllers: [AppController],
   providers: [AppService],
