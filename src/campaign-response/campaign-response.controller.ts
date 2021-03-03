@@ -8,7 +8,7 @@ import {
   Ip,
   Headers,
   Query,
-  HttpStatus,
+  HttpStatus, HttpException, HttpCode,
 } from '@nestjs/common';
 import { CampaignResponseService } from './campaign-response.service';
 import { CreateCampaignResponseDto } from './dto/create-campaign-response.dto';
@@ -25,6 +25,16 @@ export class CampaignResponseController {
   constructor(
     private readonly campaignResponseService: CampaignResponseService,
   ) {}
+
+  @Post('/stat')
+  @HttpCode(200)
+  status(@Body() statusSiteDto: StatusCampaignResponseDto) {
+    try {
+      return this.campaignResponseService.status(statusSiteDto);
+    } catch (err) {
+      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   @Post(':campId')
   create(
@@ -71,8 +81,4 @@ export class CampaignResponseController {
     return this.campaignResponseService.findOne(id);
   }
 
-  @Post('/status')
-  status(@Body() statusSiteDto: StatusCampaignResponseDto) {
-    return this.campaignResponseService.status(statusSiteDto);
-  }
 }

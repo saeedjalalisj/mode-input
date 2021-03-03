@@ -3,12 +3,16 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { randomUser } from '../src/shared/test/user.mock';
+import { CreateCampaignDto } from '../src/campaign/dto/create-campaign.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
   let token: string;
   let siteId: string;
+  let trackingCode: any;
+  let campaign: any;
   const rmUser = randomUser();
+  //todo: each test must be independent from others
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -52,6 +56,7 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .then(res => {
         expect(res.body).toHaveProperty('code');
+        trackingCode = res.body;
       });
   });
 
@@ -136,10 +141,59 @@ describe('AppController (e2e)', () => {
       .expect(200);
   });
 
-  // it('/site/status (POST)', async () => {
-  //     return request(app.getHttpServer())
-  //       .post('/response/status')
-  //       .send({ siteId: '', campId: '', trackingCode: '' })
-  //       .expect(200);
-  // });
+  it('/campaign (POST)', () => {
+    const createCampaignDto: CreateCampaignDto = {
+      name: 'new_camp',
+      title: 'say more?',
+      subtitle: 'is that is good?',
+      thanks_message: 'thanks',
+      allow_rating: true,
+      require_rating: true,
+      allow_full_name: false,
+      allow_mobile: false,
+      allow_comment: false,
+      allow_email: false,
+      type: 'feedback',
+      siteId: siteId,
+    };
+    return request(app.getHttpServer())
+      .post('/campaign')
+      .set('Authorization', 'Bearer ' + token)
+      .expect(201)
+      .send(createCampaignDto)
+      .then(res => {
+        expect(res.body).toHaveProperty('title');
+        campaign = res.body;
+      });
+  });
+
+  it('/response/stat (POST)', async () => {
+    return request(app.getHttpServer())
+      .post('/response/stat')
+      .send({
+        siteId: siteId,
+        campId: campaign._id,
+        trackingCode: trackingCode.code,
+      })
+      .expect(200)
+      .then(res => {
+        expect(res.body).toBeTruthy();
+        console.log(res.body);
+      });
+  });
+
+  it('/response/stat (POST)', async () => {
+    return request(app.getHttpServer())
+      .post('/response/stat')
+      .send({
+        siteId: siteId,
+        campId: campaign._id,
+        trackingCode: '',
+      })
+      .expect(200)
+      .then(res => {
+        expect(res.body).toBeTruthy();
+        console.log(res.body);
+      });
+  });
 });
