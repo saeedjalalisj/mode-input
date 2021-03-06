@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from "@nestjs/common";
 import * as helmet from 'helmet';
-import * as csurf from 'csurf';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { TransformInterceptor } from "./shared/transform.interceptor";
 
 async function bootstrap() {
@@ -10,7 +10,15 @@ async function bootstrap() {
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(new ValidationPipe());
   app.use(helmet());
-  app.use(csurf());
+  const config = new DocumentBuilder()
+    .setTitle('Mode-input')
+    .setDescription('The Mode-input API description')
+    .setVersion('1.0')
+    .addTag('mode-input')
+    .build();
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
+
   await app.listen(3000);
 }
 bootstrap();

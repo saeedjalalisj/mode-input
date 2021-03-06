@@ -26,6 +26,10 @@ export class CampaignResponseController {
     private readonly campaignResponseService: CampaignResponseService,
   ) {}
 
+  /**
+   * show status of one campaign
+   * @param statusSiteDto
+   */
   @Post('/stat')
   @HttpCode(200)
   status(@Body() statusSiteDto: StatusCampaignResponseDto) {
@@ -36,6 +40,14 @@ export class CampaignResponseController {
     }
   }
 
+  /**
+   * create response of a campaign
+   * @param createCampaignResponseDto
+   * @param campId
+   * @param ip
+   * @param agent
+   * @param trackingCode
+   */
   @Post(':campId')
   create(
     @Body() createCampaignResponseDto: CreateCampaignResponseDto,
@@ -60,6 +72,12 @@ export class CampaignResponseController {
     }
   }
 
+  /**
+   * campaign list
+   * @param campId
+   * @param currentUser
+   * @param query
+   */
   @UseGuards(AuthGuard('jwt'))
   @Get('/:campId')
   findAll(
@@ -75,6 +93,10 @@ export class CampaignResponseController {
     );
   }
 
+  /**
+   * find one campaign
+   * @param id
+   */
   @UseGuards(AuthGuard('jwt'))
   @Get(':id')
   findOne(@Param('id') id: string) {
