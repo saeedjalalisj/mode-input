@@ -22,7 +22,6 @@ import { PaginationDto } from './dto/pagination.dto';
 import { SendError } from '../shared/sendError';
 import { StatusCampaignResponseDto } from './dto/status-campaign-response.dto';
 import { ApiResponse } from '@nestjs/swagger';
-import { AuthResponse } from '../auth/auth.interface';
 import { Campaigns } from '../campaign/entities/campaign.schema';
 import { CampaignResponse } from './entities/campaign-response.entity';
 

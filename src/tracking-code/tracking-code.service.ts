@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -14,16 +14,12 @@ export class TrackingCodeService {
     private trackingCodeModel: Model<TrackingCodeDocument>,
   ) {}
 
-  async create() {
+  async create(): Promise<Error | TrackingCode> {
     try {
       const code: string = uuid();
       return await new this.trackingCodeModel({ code }).save();
     } catch (err) {
-      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new err();
     }
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} trackingCode`;
   }
 }
