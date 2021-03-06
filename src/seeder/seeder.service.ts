@@ -17,7 +17,7 @@ import {
 import {
   CampaignResponse,
   CampaignResponseDocument,
-} from '../campaign-response/entities/campaign-response.schema';
+} from '../campaign-response/entities/campaign-response.entity';
 
 Injectable();
 export class SeederService {

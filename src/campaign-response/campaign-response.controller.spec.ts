@@ -6,8 +6,8 @@ import * as mongoose from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   CampaignResponse,
-  CampaignResponseSchema,
-} from './entities/campaign-response.schema';
+  CampaignResponseEntity,
+} from './entities/campaign-response.entity';
 import { StatusCampaignResponseDto } from './dto/status-campaign-response.dto';
 import {
   Campaigns,
@@ -67,7 +67,7 @@ describe('CampaignResponseController', () => {
         MongooseModule.forFeature([
           { name: Campaigns.name, schema: CampaignsSchema },
           { name: User.name, schema: UserSchema },
-          { name: CampaignResponse.name, schema: CampaignResponseSchema },
+          { name: CampaignResponse.name, schema: CampaignResponseEntity },
           { name: TrackingCode.name, schema: TrackingCodeSchema },
           { name: Site.name, schema: SiteSchema },
         ]),

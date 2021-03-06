@@ -66,6 +66,6 @@ export class CampaignResponse {
 
 export type CampaignResponseDocument = CampaignResponse & Document;
 
-export const CampaignResponseSchema = SchemaFactory.createForClass(
+export const CampaignResponseEntity = SchemaFactory.createForClass(
   CampaignResponse,
 );
