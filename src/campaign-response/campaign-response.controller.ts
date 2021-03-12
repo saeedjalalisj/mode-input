@@ -38,7 +38,7 @@ export class CampaignResponseController {
   @Post('/stat')
   @HttpCode(200)
   @ApiResponse({ status: 200, description: 'return a campaign status ', type: Campaigns })
-  status(@Body() statusSiteDto: StatusCampaignResponseDto): Promise<Error | Campaigns>{
+  status(@Body() statusSiteDto: StatusCampaignResponseDto): Promise<Campaigns>{
     try {
       return this.campaignResponseService.status(statusSiteDto);
     } catch (err) {
@@ -63,7 +63,7 @@ export class CampaignResponseController {
     @Ip() ip,
     @Agent() agent,
     @Headers('tracking-code') trackingCode,
-  ): Promise<Error | CampaignResponse> {
+  ): Promise< CampaignResponse> {
     try {
       if (!trackingCode) {
         SendError('tracking code not found', HttpStatus.NOT_FOUND);

@@ -104,21 +104,21 @@ describe('CampaignResponseService', () => {
 
     const userId = await createUser(userService);
     const createdSite = await siteService.create(createSiteDto, userId);
+      const createCampaignDto: CreateCampaignDto = {
+        name: 'new_camp',
+        title: 'say more?',
+        subtitle: 'is that is good?',
+        thanks_message: 'thanks',
+        allow_rating: true,
+        require_rating: true,
+        allow_full_name: false,
+        allow_mobile: false,
+        allow_comment: false,
+        allow_email: false,
+        type: 'feedback',
+        siteId: (createdSite instanceof Site) ? createdSite._id : null,
+      };
 
-    const createCampaignDto: CreateCampaignDto = {
-      name: 'new_camp',
-      title: 'say more?',
-      subtitle: 'is that is good?',
-      thanks_message: 'thanks',
-      allow_rating: true,
-      require_rating: true,
-      allow_full_name: false,
-      allow_mobile: false,
-      allow_comment: false,
-      allow_email: false,
-      type: 'feedback',
-      siteId: createdSite._id,
-    };
 
     const createdCampaign = await campaignService.create(
       createCampaignDto,

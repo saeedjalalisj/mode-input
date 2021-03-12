@@ -12,7 +12,7 @@ export class TrackingCodeController {
    */
   @Get()
   @ApiResponse({ status: 200, description: 'return a tracking code ', type: TrackingCode })
-  create(): Promise<Error | TrackingCode> {
+  create(): Promise< TrackingCode> {
     try {
       return this.trackingCodeService.create();
     } catch (err) {

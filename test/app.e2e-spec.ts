@@ -4,6 +4,7 @@ import * as request from 'supertest';
 import { AppModule } from '../src/app.module';
 import { randomUser } from '../src/shared/test/user.mock';
 import { CreateCampaignDto } from '../src/campaign/dto/create-campaign.dto';
+import * as mongoose from 'mongoose';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -86,8 +87,9 @@ describe('AppController (e2e)', () => {
       });
   });
   it('/site/:id (GET) Not Found', () => {
+    const siteId = mongoose.Types.ObjectId('56cb91bdc3464f14678934ca');
     return request(app.getHttpServer())
-      .get('/site/1')
+      .get(`/site/${siteId}`)
       .set('Authorization', 'Bearer ' + token)
       .expect(404);
   });
@@ -178,7 +180,6 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .then(res => {
         expect(res.body).toBeTruthy();
-        console.log(res.body);
       });
   });
 
@@ -193,7 +194,6 @@ describe('AppController (e2e)', () => {
       .expect(200)
       .then(res => {
         expect(res.body).toBeTruthy();
-        console.log(res.body);
       });
   });
 });

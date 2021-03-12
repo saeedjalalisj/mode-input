@@ -15,15 +15,16 @@ export class SiteService {
   async create(
     createSiteDto: CreateSiteDto,
     userId: string,
-  ): Promise<Error | Site> {
+  ): Promise<Site> {
     try {
       const newSite: CreateSiteDto & { userId: string } = {
         ...createSiteDto,
         userId,
       };
-      return await new this.siteModel(newSite).save();
+      const createdSite = new this.siteModel(newSite);
+      return await createdSite.save();
     } catch (err) {
-      throw new err();
+      throw err;
     }
   }
 
@@ -31,7 +32,7 @@ export class SiteService {
     page: number,
     perPage = 5,
     userId: string,
-  ): Promise<Error | Site[]> {
+  ): Promise< Site[]> {
     try {
       page = page - 1 > 0 ? page - 1 : 0;
       perPage = perPage * 1;
@@ -41,15 +42,19 @@ export class SiteService {
         .skip(perPage * page)
         .exec();
     } catch (err) {
-      throw new err();
+      throw err;
     }
   }
 
-  async findOne(id: string, userId: string): Promise<Error | Site> {
+  async findOne(id: string, userId: string): Promise<Site> {
     try {
-      return await this.siteModel.findOne({ _id: id, userId });
+      const site = await this.siteModel.findOne({ _id: id, userId });
+      if (site == null) {
+        throw new Error('site not found');
+      }
+      return site;
     } catch (err) {
-      throw new err();
+      throw err;
     }
   }
 
@@ -57,11 +62,11 @@ export class SiteService {
     id: string,
     updateSiteDto: UpdateSiteDto,
     userId: string,
-  ): Promise<Error | Site> {
+  ): Promise<any> {
     try {
       return await this.siteModel.updateOne({ _id: id, userId }, updateSiteDto);
     } catch (err) {
-      throw new err();
+      throw err;
     }
   }
 
@@ -69,7 +74,7 @@ export class SiteService {
     try {
       return await this.siteModel.deleteOne({ _id: id, userId });
     } catch (err) {
-      throw new err();
+      throw err;
     }
   }
 }

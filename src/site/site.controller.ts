@@ -20,6 +20,7 @@ import { PaginationDto } from '../shared/pagination.dto';
 import { SendError } from '../shared/sendError';
 import { Site } from './entities/site.entity';
 import { ApiResponse } from '@nestjs/swagger';
+import { throwError } from 'rxjs';
 
 @Controller('site')
 @UseGuards(AuthGuard('jwt'))
@@ -31,7 +32,7 @@ export class SiteController {
   create(
     @Body() createSiteDto: CreateSiteDto,
     @CurrentUser() currentUser,
-  ): Promise<Error | Site> {
+  ): Promise<Site> {
     try {
       return this.siteService.create(createSiteDto, currentUser.userId);
     } catch (err) {
@@ -44,7 +45,7 @@ export class SiteController {
   findAll(
     @Query() query: PaginationDto,
     @CurrentUser() currentUser,
-  ): Promise<Error | Site[]> {
+  ): Promise< Site[]> {
     try {
       return this.siteService.findAll(
         query.page,
@@ -58,14 +59,17 @@ export class SiteController {
 
   @Get(':id')
   @ApiResponse({ status: 200, description: 'Return one site', type: Site })
-  findOne(
+  async findOne(
     @Param('id') id: string,
     @CurrentUser() currentUser,
-  ): Promise<Error | Site> {
+  ): Promise<Site> {
     try {
-      return this.siteService.findOne(id, currentUser.userId);
+      return await this.siteService.findOne(id, currentUser.userId);
     } catch (err) {
-      SendError(err, HttpStatus.NOT_FOUND);
+      if (err.message == 'site not found') {
+        SendError(err, HttpStatus.NOT_FOUND);
+      }
+      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -76,7 +80,7 @@ export class SiteController {
     @Param('id') id: string,
     @Body() updateSiteDto: UpdateSiteDto,
     @CurrentUser() currentUser,
-  ): Promise<Error | Site> {
+  ): Promise<any> {
     try {
       return this.siteService.update(id, updateSiteDto, currentUser.userId);
     } catch (err) {

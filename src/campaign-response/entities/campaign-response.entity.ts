@@ -5,7 +5,7 @@ import { Campaigns } from '../../campaign/entities/campaign.schema';
 import { TrackingCode } from '../../tracking-code/entities/tracking-code.entity';
 
 @Schema()
-export class CampaignResponse {
+export class CampaignResponse extends Document {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     ref: Campaigns.name,

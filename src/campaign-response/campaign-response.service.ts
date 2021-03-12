@@ -24,7 +24,7 @@ export class CampaignResponseService {
 
   async create(
     createCampaignResponseDto: CreateCampaignResponseInterface,
-  ): Promise<Error | CampaignResponse> {
+  ): Promise<CampaignResponse> {
     try {
       return await new this.campaignResponseModel(
         createCampaignResponseDto,
@@ -39,7 +39,7 @@ export class CampaignResponseService {
     userId: string,
     page?: number,
     perPage?: number,
-  ): Promise<Error | CampaignResponse[]> {
+  ): Promise<CampaignResponse[]> {
     try {
       perPage = perPage ? perPage : 5;
       page = page - 1 > 0 ? page - 1 : 0;
@@ -56,7 +56,7 @@ export class CampaignResponseService {
     }
   }
 
-  findOne(id: string): Promise<Error | CampaignResponse> {
+  findOne(id: string): Promise<CampaignResponse> {
     try {
       return this.campaignResponseModel.findOne({ _id: id }).exec();
     } catch (err) {
@@ -66,7 +66,7 @@ export class CampaignResponseService {
 
   async status(
     statusSiteDto: StatusCampaignResponseDto,
-  ): Promise<Error | Campaigns> {
+  ): Promise<Campaigns> {
     try {
       const campaignResponse = await this.campaignResponseModel.aggregate([
         {

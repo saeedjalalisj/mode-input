@@ -14,7 +14,7 @@ export class TrackingCodeService {
     private trackingCodeModel: Model<TrackingCodeDocument>,
   ) {}
 
-  async create(): Promise<Error | TrackingCode> {
+  async create(): Promise< TrackingCode> {
     try {
       const code: string = uuid();
       return await new this.trackingCodeModel({ code }).save();
