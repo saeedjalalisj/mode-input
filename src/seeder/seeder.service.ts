@@ -17,7 +17,7 @@ import {
 import {
   CampaignResponse,
   CampaignResponseDocument,
-} from '../campaign-response/entities/campaign-response.schema';
+} from '../campaign-response/entities/campaign-response.entity';
 
 Injectable();
 export class SeederService {
@@ -71,7 +71,8 @@ export class SeederService {
     const type = ['feedback', 'star', 'contact'];
     const campaigns = [];
     for (let i = 0; i <= 5; i++) {
-      const campaign: Campaigns = {
+      const campaign = {
+        _id: '',
         allow_comment: false,
         allow_email: false,
         allow_full_name: true,
@@ -100,12 +101,12 @@ export class SeederService {
     const campaign = await this.campaignModel.findOne({ name: 'campaign-1' });
     const campaignResponses = [];
     for (let i = 0; i <= 5; i++) {
-      const trackingCode: TrackingCode = {
+      const trackingCode = {
         code: uuid(),
         createAt: new Date(),
       };
       const newTrackingCode = await this.trackingCodeModel.create(trackingCode);
-      const campaignResponse: CampaignResponse = {
+      const campaignResponse = {
         agent: 'browser',
         browser_name: '',
         browser_version: '',

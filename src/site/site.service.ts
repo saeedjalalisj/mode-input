@@ -1,10 +1,9 @@
-import { HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateSiteDto } from './dto/create-site.dto';
 import { UpdateSiteDto } from './dto/update-site.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Site, SiteDocument } from './entities/site.entity';
-import { SendError } from '../shared/sendError';
 
 @Injectable()
 export class SiteService {
@@ -13,19 +12,27 @@ export class SiteService {
     private siteModel: Model<SiteDocument>,
   ) {}
 
-  async create(createSiteDto: CreateSiteDto, userId: string) {
+  async create(
+    createSiteDto: CreateSiteDto,
+    userId: string,
+  ): Promise<Site> {
     try {
       const newSite: CreateSiteDto & { userId: string } = {
         ...createSiteDto,
         userId,
       };
-      return await new this.siteModel(newSite).save();
+      const createdSite = new this.siteModel(newSite);
+      return await createdSite.save();
     } catch (err) {
-      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw err;
     }
   }
 
-  async findAll(page: number, perPage = 5, userId: string) {
+  async findAll(
+    page: number,
+    perPage = 5,
+    userId: string,
+  ): Promise< Site[]> {
     try {
       page = page - 1 > 0 ? page - 1 : 0;
       perPage = perPage * 1;
@@ -35,23 +42,31 @@ export class SiteService {
         .skip(perPage * page)
         .exec();
     } catch (err) {
-      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw err;
     }
   }
 
-  async findOne(id: string, userId: string) {
+  async findOne(id: string, userId: string): Promise<Site> {
     try {
-      return await this.siteModel.findOne({ _id: id, userId });
+      const site = await this.siteModel.findOne({ _id: id, userId });
+      if (site == null) {
+        throw new Error('site not found');
+      }
+      return site;
     } catch (err) {
-      SendError(err, HttpStatus.NOT_FOUND);
+      throw err;
     }
   }
 
-  async update(id: string, updateSiteDto: UpdateSiteDto, userId: string) {
+  async update(
+    id: string,
+    updateSiteDto: UpdateSiteDto,
+    userId: string,
+  ): Promise<any> {
     try {
       return await this.siteModel.updateOne({ _id: id, userId }, updateSiteDto);
     } catch (err) {
-      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw err;
     }
   }
 
@@ -59,7 +74,7 @@ export class SiteService {
     try {
       return await this.siteModel.deleteOne({ _id: id, userId });
     } catch (err) {
-      SendError(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw err;
     }
   }
 }

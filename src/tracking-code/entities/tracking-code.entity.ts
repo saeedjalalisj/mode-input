@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 
 @Schema()
-export class TrackingCode {
+export class TrackingCode extends Document {
   @Prop(String)
   code: string;
 

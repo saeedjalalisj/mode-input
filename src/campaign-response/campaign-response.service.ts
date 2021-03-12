@@ -1,11 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { CreateCampaignResponseInterface } from './interface/create-campaign-response.interface';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import {
   CampaignResponse,
   CampaignResponseDocument,
-} from './entities/campaign-response.schema';
+} from './entities/campaign-response.entity';
 import {
   Campaigns,
   CampaignsDocument,
@@ -22,13 +22,15 @@ export class CampaignResponseService {
     private campaignModel: Model<CampaignsDocument>,
   ) {}
 
-  async create(createCampaignResponseDto: CreateCampaignResponseInterface) {
+  async create(
+    createCampaignResponseDto: CreateCampaignResponseInterface,
+  ): Promise<CampaignResponse> {
     try {
       return await new this.campaignResponseModel(
         createCampaignResponseDto,
       ).save();
     } catch (err) {
-      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new err();
     }
   }
 
@@ -37,7 +39,7 @@ export class CampaignResponseService {
     userId: string,
     page?: number,
     perPage?: number,
-  ) {
+  ): Promise<CampaignResponse[]> {
     try {
       perPage = perPage ? perPage : 5;
       page = page - 1 > 0 ? page - 1 : 0;
@@ -50,19 +52,21 @@ export class CampaignResponseService {
         .exec();
       return response.filter(res => res.campId !== null);
     } catch (err) {
-      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new err();
     }
   }
 
-  findOne(id: string) {
+  findOne(id: string): Promise<CampaignResponse> {
     try {
       return this.campaignResponseModel.findOne({ _id: id }).exec();
     } catch (err) {
-      throw new HttpException(err, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new err();
     }
   }
 
-  async status(statusSiteDto: StatusCampaignResponseDto) {
+  async status(
+    statusSiteDto: StatusCampaignResponseDto,
+  ): Promise<Campaigns> {
     try {
       const campaignResponse = await this.campaignResponseModel.aggregate([
         {
@@ -83,7 +87,7 @@ export class CampaignResponseService {
         },
       ]);
       if (campaignResponse.length > 0) {
-        throw new Error('nothing to show');
+        SendError(HttpStatus.NOT_FOUND, 'nothing to show');
       } else {
         return await this.campaignModel.findOne(
           {

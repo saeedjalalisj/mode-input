@@ -5,7 +5,7 @@ import { User } from '../../user/entities/user.schema';
 import { Site } from '../../site/entities/site.entity';
 
 @Schema()
-export class Campaigns {
+export class Campaigns extends Document {
   @Prop(String)
   name: string;
 

@@ -5,8 +5,8 @@ import * as mongoose from 'mongoose';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   CampaignResponse,
-  CampaignResponseSchema,
-} from './entities/campaign-response.schema';
+  CampaignResponseEntity,
+} from './entities/campaign-response.entity';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { CreateCampaignDto } from '../campaign/dto/create-campaign.dto';
 import { CampaignService } from '../campaign/campaign.service';
@@ -78,7 +78,7 @@ describe('CampaignResponseService', () => {
         MongooseModule.forFeature([
           { name: Campaigns.name, schema: CampaignsSchema },
           { name: User.name, schema: UserSchema },
-          { name: CampaignResponse.name, schema: CampaignResponseSchema },
+          { name: CampaignResponse.name, schema: CampaignResponseEntity },
           { name: TrackingCode.name, schema: TrackingCodeSchema },
           { name: Site.name, schema: SiteSchema },
         ]),
@@ -104,21 +104,21 @@ describe('CampaignResponseService', () => {
 
     const userId = await createUser(userService);
     const createdSite = await siteService.create(createSiteDto, userId);
+      const createCampaignDto: CreateCampaignDto = {
+        name: 'new_camp',
+        title: 'say more?',
+        subtitle: 'is that is good?',
+        thanks_message: 'thanks',
+        allow_rating: true,
+        require_rating: true,
+        allow_full_name: false,
+        allow_mobile: false,
+        allow_comment: false,
+        allow_email: false,
+        type: 'feedback',
+        siteId: (createdSite instanceof Site) ? createdSite._id : null,
+      };
 
-    const createCampaignDto: CreateCampaignDto = {
-      name: 'new_camp',
-      title: 'say more?',
-      subtitle: 'is that is good?',
-      thanks_message: 'thanks',
-      allow_rating: true,
-      require_rating: true,
-      allow_full_name: false,
-      allow_mobile: false,
-      allow_comment: false,
-      allow_email: false,
-      type: 'feedback',
-      siteId: createdSite._id,
-    };
 
     const createdCampaign = await campaignService.create(
       createCampaignDto,

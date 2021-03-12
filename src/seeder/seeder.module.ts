@@ -11,8 +11,8 @@ import {
 } from '../campaign/entities/campaign.schema';
 import {
   CampaignResponse,
-  CampaignResponseSchema,
-} from '../campaign-response/entities/campaign-response.schema';
+  CampaignResponseEntity,
+} from '../campaign-response/entities/campaign-response.entity';
 import {
   TrackingCode,
   TrackingCodeSchema,
@@ -33,7 +33,7 @@ import {
       { name: Site.name, schema: SiteSchema },
       { name: User.name, schema: UserSchema },
       { name: Campaigns.name, schema: CampaignsSchema },
-      { name: CampaignResponse.name, schema: CampaignResponseSchema },
+      { name: CampaignResponse.name, schema: CampaignResponseEntity },
       { name: TrackingCode.name, schema: TrackingCodeSchema },
     ]),
   ],

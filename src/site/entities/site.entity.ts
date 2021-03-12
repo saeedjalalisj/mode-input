@@ -4,7 +4,8 @@ import * as mongoose from 'mongoose';
 import { User } from '../../user/entities/user.schema';
 
 @Schema()
-export class Site {
+export class Site extends Document {
+
   @Prop(String)
   name: string;
 
